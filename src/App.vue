@@ -11,7 +11,7 @@ const details = ref(['50% coton', '30% wool', '20% polyester'])
 
 const variants = ref([
   { id: 2234, color: 'green', imageUrl: GreenSocksImg },
-  { id: 2235, color: 'blue' },
+  { id: 2235, color: 'blue', imageUrl: BlueSocksImg },
 ])
 
 const productImg = ref(GreenSocksImg)
@@ -22,12 +22,8 @@ const addToCart = () => {
   cart.value.push(product.value)
 }
 
-const setProductImage = (variant: string) => {
-  if (variant === 'green') {
-    productImg.value = GreenSocksImg
-  } else {
-    productImg.value = BlueSocksImg
-  }
+const setProductImage = (variantImg: string) => {
+  productImg.value = variantImg
 }
 </script>
 
@@ -41,6 +37,7 @@ const setProductImage = (variant: string) => {
             :src="productImg"
             alt="socks with vue mastery logo"
             class="transition-all duration-200 ease-linear"
+            :class="!inventory && 'out-of-stock-img'"
           />
         </div>
         <div class="product-info">
@@ -55,22 +52,35 @@ const setProductImage = (variant: string) => {
             <li
               v-for="variant in variants"
               :key="variant.id"
-              @mouseover="setProductImage(variant.color)"
-              @mouseout="setProductImage('green')"
-              class="outline-1 capitalize text-gray-50 font-medium outline-blue-100 w-fit px-4 py-1 rounded-md cursor-pointer"
+              @mouseover="setProductImage(variant.imageUrl)"
+              class="px-4 py-1 cursor-pointer color-circle"
               :class="variant.color === 'green' ? 'bg-green-700' : 'bg-cyan-700'"
             >
-              {{ variant.color }}
+              <span class="sr-only">
+                {{ variant.color }}
+              </span>
             </li>
           </ul>
 
           <p v-if="inventory > 10" class="text-green-400">In Stock</p>
-          <p v-else-if="inventory <= 10" class="text-orange-400">Almost Out of Stock</p>
+          <p v-else-if="inventory <= 10 && inventory > 0" class="text-orange-400">
+            Almost Out of Stock
+          </p>
           <p v-else class="text-red-400">Out of Stock</p>
-          <small v-show="onSale" class="text-sm text-blue-400 font-semibold capitalize">
+          <small
+            v-show="onSale && inventory > 0"
+            class="text-sm text-blue-400 font-semibold capitalize"
+          >
             On Sale
           </small>
-          <button class="button hover:brightness-90" @click="addToCart">Add to Cart</button>
+          <button
+            class="button"
+            @click="addToCart"
+            :disabled="!inventory"
+            :class="!inventory && 'disabled-button'"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
