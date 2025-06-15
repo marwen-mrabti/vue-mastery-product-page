@@ -4,6 +4,13 @@ import GreenSocksImg from '@/assets/images/socks_green.jpeg'
 import BlueSocksImg from '@/assets/images/socks_blue.jpeg'
 import type { TVariant } from '@/types'
 
+const props = defineProps<{
+  premium: {
+    type: boolean
+    required: true
+  }
+}>()
+
 const emits = defineEmits<{
   addToCart: [string]
 }>()
@@ -32,6 +39,9 @@ const productImg = computed(() => {
 const inStock = computed(() => {
   return selectedVariantIndex.value !== -1 && !!variants.value[selectedVariantIndex.value].quantity
 })
+const shipping = computed(() => {
+  return props.premium ? 'free' : 2.99
+})
 const onSale = ref(true)
 
 const updateVariant = (variantIndex: number) => {
@@ -58,6 +68,7 @@ const updateVariant = (variantIndex: number) => {
             {{ detail }}
           </li>
         </ul>
+        <p>Shipping: {{ shipping }}</p>
         <ul class="my-3 flex gap-2">
           <li
             v-for="(variant, index) in variants"
