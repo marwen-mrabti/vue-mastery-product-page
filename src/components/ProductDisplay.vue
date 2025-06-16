@@ -5,14 +5,12 @@ import BlueSocksImg from '@/assets/images/socks_blue.jpeg'
 import type { TVariant } from '@/types'
 
 const props = defineProps<{
-  premium: {
-    type: boolean
-    required: true
-  }
+  premium: boolean
 }>()
 
 const emits = defineEmits<{
-  addToCart: [string]
+  addToCart: [number]
+  removeFromCart: [number]
 }>()
 
 const product = ref('Socks')
@@ -87,14 +85,22 @@ const updateVariant = (variantIndex: number) => {
         <small v-show="onSale && inStock" class="text-sm text-blue-400 font-semibold capitalize">
           {{ title }} is On Sale
         </small>
-        <button
-          class="button"
-          @click="emits('addToCart', title)"
-          :disabled="!inStock"
-          :class="!inStock && 'disabled-button'"
-        >
-          Add to Cart
-        </button>
+        <div class="flex gap-4">
+          <button
+            class="button min-w-fit"
+            @click="emits('addToCart', variants[selectedVariantIndex].id)"
+            :disabled="!inStock"
+            :class="!inStock && 'disabled-button'"
+          >
+            Add to Cart
+          </button>
+          <button
+            class="button min-w-fit !bg-red-400"
+            @click="emits('removeFromCart', variants[selectedVariantIndex].id)"
+          >
+            remove from cart
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -10,3 +10,10 @@ export type TVariant = {
   imageUrl: string
   quantity: number
 }
+
+export type TReview = {
+  id:string,
+  name: string
+  content: string
+  rating: number | null
+}
